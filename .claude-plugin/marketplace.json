@@ -1,0 +1,21 @@
+{
+  "name": "due-diligence",
+  "owner": {
+    "name": "Patrick Wong",
+    "email": "patrick@januarius.ph"
+  },
+  "metadata": {
+    "description": "Equity research due diligence toolkit for Claude Code",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "due-diligence",
+      "source": "./",
+      "description": "Equity research due diligence toolkit — generates professional PDF reports including bear cases, management honesty checks, industry analysis, Value Line one-pagers, and annotated price charts for any stock ticker.",
+      "version": "1.0.0",
+      "category": "finance",
+      "tags": ["equity-research", "due-diligence", "stock-analysis", "investment", "finance", "pdf-reports"]
+    }
+  ]
+}
