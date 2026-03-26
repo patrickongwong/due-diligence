@@ -15,7 +15,7 @@ Equity research due diligence toolkit for [Claude Code](https://claude.ai/code).
 ## Installation
 
 ```bash
-claude plugin install patrickwong/due-diligence
+claude plugin install patrickongwong/due-diligence
 ```
 
 ### Python Dependencies

@@ -4,10 +4,10 @@
   "description": "Equity research due diligence toolkit — generates professional PDF reports including bear cases, management honesty checks, industry analysis, Value Line one-pagers, and annotated price charts for any stock ticker.",
   "author": {
     "name": "Patrick Wong",
-    "url": "https://github.com/patrickwong"
+    "url": "https://github.com/patrickongwong"
   },
-  "homepage": "https://github.com/patrickwong/due-diligence",
-  "repository": "https://github.com/patrickwong/due-diligence",
+  "homepage": "https://github.com/patrickongwong/due-diligence",
+  "repository": "https://github.com/patrickongwong/due-diligence",
   "license": "MIT",
   "keywords": ["equity-research", "due-diligence", "stock-analysis", "investment", "finance", "pdf-reports"]
 }
