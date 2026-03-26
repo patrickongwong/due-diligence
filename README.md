@@ -1,6 +1,8 @@
 # Due Diligence
 
-Equity research due diligence toolkit for [Claude Code](https://claude.ai/code). Generates professional PDF reports for any stock ticker.
+Equity research due diligence toolkit for Claude Code. Generates PDF reports for any stock ticker.
+
+These skills are part of the first phase of a Due Diligence, and mainly are about getting a rough picture about a company before any additional changes are made.
 
 ## Skills
 
