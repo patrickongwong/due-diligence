@@ -121,7 +121,11 @@ Organize the verified findings into the PDF structure below. Write in the style 
 
 ### Step 5: Generate the PDF
 
-Run the bundled PDF generator script at `$CLAUDE_PLUGIN_ROOT/skills/dd-1ind/scripts/generate_industry_pdf.py`. Pass it a JSON file with all the structured data. The script produces a professional PDF with:
+Run the bundled PDF generator script at `$CLAUDE_PLUGIN_ROOT/skills/dd-1ind/scripts/generate_industry_pdf.py`. Pass it a JSON file with all the structured data.
+
+**CRITICAL: Do NOT truncate or shorten any research data when assembling the JSON.** Pass the FULL text of `industry_explanation`, `history_narrative`, and all `timeline` entries from the research subagent into the JSON file. The PDF script handles layout and pagination automatically — there is no need to cut content to fit a page target. Also ensure all text values in the JSON are plain text (no HTML tags like `<b>`) — the PDF script handles formatting. The `industry_explanation` and `history_narrative` fields in particular can be thousands of characters long; this is expected and correct.
+
+The script produces a professional PDF with:
 
 1. **Dark header banner**: `{TICKER} INDUSTRY ANALYSIS` with company name, industry, date, price, market cap
 2. **Industry Overview strip**: Total market size, growth rate, number of major players
@@ -142,7 +146,7 @@ The PDF must have:
 - All dates bold
 - Letter size, 0.5" margins
 - Clean, professional layout — no text overlap
-- 2-4 pages maximum
+- Let the content determine the length — typically 5-10 pages. Do NOT truncate research to fit a page target
 
 ### Step 6: Save and open
 
@@ -150,7 +154,7 @@ Save the PDF to `$DD_OUTPUT_DIR/<TICKER>/<TICKER>_Industry_Analysis.pdf` (or use
 
 ## Writing Style
 
-Write in the style of Malcolm Gladwell — make industry data tell a story. Every section should have a narrative thread, not just bullet points of facts. But keep it tight — this is a 2-4 page document, not a book chapter. Data-heavy where it matters, narrative where it helps comprehension.
+Write in the style of Malcolm Gladwell — make industry data tell a story. Every section should have a narrative thread, not just bullet points of facts. Data-heavy where it matters, narrative where it helps comprehension. Let the story breathe — if the industry history is rich, give it the space it deserves.
 
 ## Quality Checklist
 
@@ -162,7 +166,8 @@ Before delivering the PDF, verify:
 - [ ] Suppliers, customers, and regulations sections are all present
 - [ ] Fact-checker subagent ran and corrections were applied
 - [ ] No text overlap in the PDF
-- [ ] PDF is 2-4 pages
+- [ ] Industry explanation and history narrative are NOT truncated — full research content is in the JSON
+- [ ] All timeline entries from research are included (not filtered to fit a page limit)
 
 ## Example invocations
 

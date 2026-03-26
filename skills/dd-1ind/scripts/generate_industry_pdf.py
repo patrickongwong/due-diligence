@@ -82,6 +82,7 @@ from auto_install import ensure_installed
 ensure_installed('reportlab')
 
 import json
+from xml.sax.saxutils import escape as xml_escape
 from reportlab.lib.pagesizes import letter
 from reportlab.lib.units import inch
 from reportlab.lib.colors import HexColor, white
@@ -160,6 +161,13 @@ styles["silver_target"] = ParagraphStyle(
 styles["silver_reason"] = ParagraphStyle(
     "silver_reason", fontName="Helvetica", fontSize=7.5, leading=10,
     textColor=TEXT_MED)
+
+
+def safe_text(text):
+    """Escape XML-special characters so ReportLab Paragraphs render safely."""
+    if not text:
+        return ""
+    return xml_escape(str(text))
 
 
 def make_link(url, text=None):
@@ -388,9 +396,9 @@ def build_timeline_table(timeline):
     rows = [header]
     for t in timeline:
         rows.append([
-            Paragraph(f"<b>{t.get('year', '')}</b>", styles["table_cell_bold"]),
-            Paragraph(t.get("event", "")[:200], styles["table_cell"]),
-            Paragraph(t.get("significance", "")[:200], styles["table_cell"]),
+            Paragraph(f"<b>{safe_text(t.get('year', ''))}</b>", styles["table_cell_bold"]),
+            Paragraph(safe_text(t.get("event", "")), styles["table_cell"]),
+            Paragraph(safe_text(t.get("significance", "")), styles["table_cell"]),
         ])
     t = Table(rows, colWidths=[0.8*inch, 3.35*inch, 3.35*inch])
     t.setStyle(TableStyle([
@@ -455,7 +463,7 @@ def generate_pdf(data, output_path):
         # Split into paragraphs for readability
         for para in industry_explanation.split("\n\n"):
             if para.strip():
-                story.append(Paragraph(para.strip(), styles["body"]))
+                story.append(Paragraph(safe_text(para.strip()), styles["body"]))
         story.extend(build_sources(data.get("industry_explanation_sources", [])))
         story.append(Spacer(1, 4))
 
@@ -468,9 +476,9 @@ def generate_pdf(data, output_path):
                 # Handle bold section headers
                 p = para.strip()
                 if p.startswith("**") and p.endswith("**"):
-                    story.append(Paragraph(f"<b>{p.strip('*')}</b>", styles["subsection_head"]))
+                    story.append(Paragraph(f"<b>{safe_text(p.strip('*'))}</b>", styles["subsection_head"]))
                 else:
-                    story.append(Paragraph(p, styles["body"]))
+                    story.append(Paragraph(safe_text(p), styles["body"]))
         story.extend(build_sources(data.get("history_sources", [])))
         story.append(Spacer(1, 4))
 
