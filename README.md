@@ -2,7 +2,7 @@
 
 Equity research due diligence toolkit for Claude Code. Generates PDF reports for any stock ticker.
 
-These skills are part of the first phase of a Due Diligence. The first phase is mainly are about getting a rough picture about a company before any further work is put in. Ideally, this should be enough for someone to write down a rough investment thesis they want to explore. Or even more ideally, it would be enough to convince someone to give up on the idea and move to a different idea.
+These skills are part of the first phase of a Due Diligence. The first phase is mainly are about getting a rough picture about a company before any further work is put in.
 
 ## Skills
 
