@@ -1590,10 +1590,10 @@ def build_html(data: StockData, chart_b64: str) -> str:
         seg_year_list = [s.year for s in seg_years]
 
         if all_product_names:
-            seg_year_hdrs = "".join(f"<th style='text-align:right;padding:1px 2px;font-size:6px;'>{y}</th>" for y in seg_year_list)
-            segment_html += f"<div style='font-weight:bold;padding:1px 3px;font-size:6.5px;'>Product Revenue ($B)</div>"
-            segment_html += f"<table style='border-collapse:collapse;width:100%;font-family:\"Courier New\",monospace;font-size:6px;'>"
-            segment_html += f"<tr style='border-bottom:1px solid #999;'><th style='text-align:left;padding:1px 2px;font-size:6px;'>Segment</th>{seg_year_hdrs}</tr>"
+            seg_year_hdrs = "".join(f"<th style='text-align:right;padding:1px 2px;font-size:8px;'>{y}</th>" for y in seg_year_list)
+            segment_html += f"<div style='font-weight:bold;padding:1px 3px;font-size:8.5px;'>Product Revenue ($B)</div>"
+            segment_html += f"<table style='border-collapse:collapse;width:100%;font-family:\"Courier New\",monospace;font-size:8px;'>"
+            segment_html += f"<tr style='border-bottom:1px solid #999;'><th style='text-align:left;padding:1px 2px;font-size:8px;'>Segment</th>{seg_year_hdrs}</tr>"
             for idx, name in enumerate(all_product_names):
                 bg = ' style="background:#f5f5f5;"' if idx % 2 == 0 else ""
                 cells = ""
@@ -1607,10 +1607,10 @@ def build_html(data: StockData, chart_b64: str) -> str:
             segment_html += "</table>"
 
         if all_geo_names:
-            seg_year_hdrs = "".join(f"<th style='text-align:right;padding:1px 2px;font-size:6px;'>{y}</th>" for y in seg_year_list)
-            segment_html += f"<div style='font-weight:bold;padding:1px 3px;font-size:6.5px;margin-top:2px;'>Geographic Revenue ($B)</div>"
-            segment_html += f"<table style='border-collapse:collapse;width:100%;font-family:\"Courier New\",monospace;font-size:6px;'>"
-            segment_html += f"<tr style='border-bottom:1px solid #999;'><th style='text-align:left;padding:1px 2px;font-size:6px;'>Region</th>{seg_year_hdrs}</tr>"
+            seg_year_hdrs = "".join(f"<th style='text-align:right;padding:1px 2px;font-size:8px;'>{y}</th>" for y in seg_year_list)
+            segment_html += f"<div style='font-weight:bold;padding:1px 3px;font-size:8.5px;margin-top:2px;'>Geographic Revenue ($B)</div>"
+            segment_html += f"<table style='border-collapse:collapse;width:100%;font-family:\"Courier New\",monospace;font-size:8px;'>"
+            segment_html += f"<tr style='border-bottom:1px solid #999;'><th style='text-align:left;padding:1px 2px;font-size:8px;'>Region</th>{seg_year_hdrs}</tr>"
             for idx, name in enumerate(all_geo_names):
                 bg = ' style="background:#f5f5f5;"' if idx % 2 == 0 else ""
                 cells = ""
@@ -1657,7 +1657,7 @@ def build_html(data: StockData, chart_b64: str) -> str:
                 f"</tr>\n"
             )
         growth_html = f"""
-        <table style="border-collapse:collapse;width:100%;font-family:'Courier New',monospace;font-size:7px;">
+        <table style="border-collapse:collapse;width:100%;font-family:'Courier New',monospace;font-size:9px;">
           <tr style="font-weight:bold;border-bottom:1px solid #999;">
             <td style="text-align:left;padding:1px 3px;">Metric</td>
             <td style="text-align:right;padding:1px 3px;">10-Yr</td>
@@ -1685,7 +1685,7 @@ def build_html(data: StockData, chart_b64: str) -> str:
   * {{ box-sizing: border-box; }}
   body {{
     font-family: Arial, Helvetica, sans-serif;
-    font-size: 7px;
+    font-size: 9px;
     margin: 0;
     padding: 0;
     overflow: hidden;
@@ -1698,33 +1698,33 @@ def build_html(data: StockData, chart_b64: str) -> str:
     justify-content: space-between;
     align-items: center;
   }}
-  .header-left {{ font-size: 14px; font-weight: bold; }}
-  .header-left span {{ font-size: 9px; font-weight: normal; opacity: 0.85; }}
-  .header-right {{ text-align: right; font-size: 8px; }}
+  .header-left {{ font-size: 18px; font-weight: bold; }}
+  .header-left span {{ font-size: 11px; font-weight: normal; opacity: 0.85; }}
+  .header-right {{ text-align: right; font-size: 10px; }}
   .header-right td {{ padding: 0 2px; text-align: right; color: #fff; }}
   .section-hdr {{
     background: #e8eaf6;
     padding: 2px 4px;
     font-weight: bold;
-    font-size: 8px;
+    font-size: 10px;
     border-bottom: 1px solid #999;
   }}
   .hist-table {{
     border-collapse: collapse;
     width: 100%;
     font-family: 'Courier New', monospace;
-    font-size: 7px;
+    font-size: 9px;
   }}
   .hist-table th {{
     padding: 1px 2px;
     text-align: right;
     font-weight: bold;
     border-bottom: 1px solid #999;
-    font-size: 5.5px;
+    font-size: 7.5px;
   }}
   .hist-table th:first-child {{ text-align: left; min-width: 65px; }}
-  .hist-table td {{ padding: 1px 2px; text-align: right; font-size: 5.5px; }}
-  .hist-table td.metric-label {{ text-align: left; white-space: nowrap; font-size: 5.5px; }}
+  .hist-table td {{ padding: 1px 2px; text-align: right; font-size: 7.5px; }}
+  .hist-table td.metric-label {{ text-align: left; white-space: nowrap; font-size: 7.5px; }}
   .bottom-grid {{
     display: grid;
     grid-template-columns: 50% 50%;
@@ -1735,7 +1735,7 @@ def build_html(data: StockData, chart_b64: str) -> str:
     border-collapse: collapse;
     width: 100%;
     font-family: 'Courier New', monospace;
-    font-size: 7px;
+    font-size: 9px;
   }}
   .data-table th {{
     padding: 1px 3px;
@@ -1749,7 +1749,7 @@ def build_html(data: StockData, chart_b64: str) -> str:
   .footer {{
     background: #f5f5f5;
     padding: 2px 8px;
-    font-size: 6px;
+    font-size: 8px;
     color: #666;
     border-top: 1px solid #999;
     text-align: center;
@@ -1805,12 +1805,12 @@ def build_html(data: StockData, chart_b64: str) -> str:
   <div class="bottom-right">
     <div class="section-hdr">SEGMENTS</div>
     <div style="padding:1px 4px;">
-      {segment_html if segment_html else '<div style="font-size:7px;color:#999;padding:2px;">No segment data available</div>'}
+      {segment_html if segment_html else '<div style="font-size:9px;color:#999;padding:2px;">No segment data available</div>'}
     </div>
 
     <div class="section-hdr">CAPITAL STRUCTURE</div>
     <div style="padding:1px 4px;">
-      <table style="border-collapse:collapse;width:100%;font-family:'Courier New',monospace;font-size:7px;">
+      <table style="border-collapse:collapse;width:100%;font-family:'Courier New',monospace;font-size:9px;">
         {cap_html}
       </table>
     </div>
@@ -1821,7 +1821,7 @@ def build_html(data: StockData, chart_b64: str) -> str:
     </div>
 
     <div class="section-hdr">BUSINESS</div>
-    <p style="padding:1px 4px;margin:0;font-size:7px;line-height:1.2;">
+    <p style="padding:1px 4px;margin:0;font-size:9px;line-height:1.2;">
       {esc(desc)}
     </p>
   </div>
