@@ -90,7 +90,8 @@ def fetch_edgar_annual(ticker: str) -> list[AnnualData]:
     """Fetch up to 15 years of annual financial data from SEC EDGAR.
 
     Uses the edgartools library to pull income statement, balance sheet,
-    and cash flow statement data from 10-K filings.
+    and cash flow statement data from 10-K filings. Falls back to 20-F
+    filings for foreign private issuers (e.g., PDD, BABA, TSM).
     """
     from edgar import Company, set_identity
     from edgar.financials import Financials
@@ -105,12 +106,15 @@ def fetch_edgar_annual(ticker: str) -> list[AnnualData]:
     try:
         company = Company(ticker)
         filings_10k = company.get_filings(form="10-K")
+        if not filings_10k or len(filings_10k) == 0:
+            print(f"[EDGAR] No 10-K filings found for {ticker}, trying 20-F...")
+            filings_10k = company.get_filings(form="20-F")
     except Exception as e:
         print(f"[EDGAR] Could not find company '{ticker}': {e}")
         return []
 
     if not filings_10k or len(filings_10k) == 0:
-        print(f"[EDGAR] No 10-K filings found for {ticker}")
+        print(f"[EDGAR] No 10-K or 20-F filings found for {ticker}")
         return []
 
     # Collect data from multiple filings to cover up to 15 years.
@@ -487,8 +491,10 @@ def fetch_edgar_quarterly(ticker: str) -> list[QuarterlyData]:
         print(f"[EDGAR] Could not find company '{ticker}' for quarterly data: {e}")
         return []
 
-    # --- Determine fiscal year-end month from most recent 10-K ---
+    # --- Determine fiscal year-end month from most recent 10-K (or 20-F) ---
     filings_10k = company.get_filings(form="10-K")
+    if not filings_10k or len(filings_10k) == 0:
+        filings_10k = company.get_filings(form="20-F")
     fy_end_month = 12  # default to calendar year
     if filings_10k and len(filings_10k) > 0:
         try:
@@ -603,9 +609,12 @@ def fetch_edgar_quarterly(ticker: str) -> list[QuarterlyData]:
         return round(val / 1e6, 2)
 
     filings_10q = company.get_filings(form="10-Q")
+    if not filings_10q or len(filings_10q) == 0:
+        print(f"[EDGAR] No 10-Q filings found for {ticker}, trying 6-K...")
+        filings_10q = company.get_filings(form="6-K")
 
     if not filings_10q or len(filings_10q) == 0:
-        print(f"[EDGAR] No 10-Q filings found for {ticker}")
+        print(f"[EDGAR] No 10-Q or 6-K filings found for {ticker}")
         return []
 
     # Step 1: Collect YTD data from each filing.
@@ -775,7 +784,7 @@ def fetch_edgar_quarterly(ticker: str) -> list[QuarterlyData]:
 
 
 def fetch_segment_data(ticker: str) -> list[SegmentData]:
-    """Fetch product/service and geographic segment revenue from 10-K XBRL data."""
+    """Fetch product/service and geographic segment revenue from 10-K (or 20-F) XBRL data."""
     from edgar import Company, set_identity
     from edgar.financials import Financials
     import pandas as pd
@@ -786,6 +795,8 @@ def fetch_segment_data(ticker: str) -> list[SegmentData]:
     try:
         company = Company(ticker)
         filings_10k = company.get_filings(form="10-K")
+        if not filings_10k or len(filings_10k) == 0:
+            filings_10k = company.get_filings(form="20-F")
     except Exception as e:
         print(f"[EDGAR] Could not find company '{ticker}' for segment data: {e}")
         return []
