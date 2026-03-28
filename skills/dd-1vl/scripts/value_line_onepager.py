@@ -252,53 +252,61 @@ def fetch_edgar_annual(ticker: str) -> list[AnnualData]:
                 opcf_raw = None
 
                 # === INCOME STATEMENT ===
-                # Only fill fields that are still None (prefer newer filing data)
-                if not inc_df.empty and date_col in inc_df.columns and not is_existing:
-                    revenue_raw = safe_get(inc_df, date_col,
-                                           standards=["Revenue"],
-                                           concepts=["us-gaap_Revenues",
-                                                     "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax"])
-                    ad.revenue = to_millions(revenue_raw)
+                # Fill fields that are still None (prefer newer filing data).
+                # Newer filings may include phantom date columns with all-NaN values,
+                # so we use field-level None checks (same pattern as balance sheet).
+                if not inc_df.empty and date_col in inc_df.columns:
+                    if ad.revenue is None:
+                        revenue_raw = safe_get(inc_df, date_col,
+                                               standards=["Revenue"],
+                                               concepts=["us-gaap_Revenues",
+                                                         "us-gaap_RevenueFromContractWithCustomerExcludingAssessedTax"])
+                        ad.revenue = to_millions(revenue_raw)
 
-                    net_income_raw = safe_get(inc_df, date_col,
-                                              standards=["NetIncome", "NetIncomeToCommonShareholders"],
-                                              concepts=["us-gaap_NetIncomeLoss"])
-                    ad.net_income = to_millions(net_income_raw)
+                    if ad.net_income is None:
+                        net_income_raw = safe_get(inc_df, date_col,
+                                                  standards=["NetIncome", "NetIncomeToCommonShareholders"],
+                                                  concepts=["us-gaap_NetIncomeLoss"])
+                        ad.net_income = to_millions(net_income_raw)
 
-                    ad.eps = safe_get(inc_df, date_col,
-                                      concepts=["us-gaap_EarningsPerShareDiluted"])
+                    if ad.eps is None:
+                        ad.eps = safe_get(inc_df, date_col,
+                                          concepts=["us-gaap_EarningsPerShareDiluted"])
 
-                    interest_raw = safe_get(inc_df, date_col,
-                                            standards=["InterestExpense"],
-                                            concepts=["us-gaap_InterestExpense",
-                                                      "us-gaap_InterestExpenseNonoperating",
-                                                      "us-gaap_InterestExpenseDebt"])
-                    ad.interest_expense = to_millions(interest_raw)
-                    # Interest expense is often reported as negative; store as positive
-                    if ad.interest_expense is not None and ad.interest_expense < 0:
-                        ad.interest_expense = abs(ad.interest_expense)
+                    if ad.interest_expense is None:
+                        interest_raw = safe_get(inc_df, date_col,
+                                                standards=["InterestExpense"],
+                                                concepts=["us-gaap_InterestExpense",
+                                                          "us-gaap_InterestExpenseNonoperating",
+                                                          "us-gaap_InterestExpenseDebt"])
+                        ad.interest_expense = to_millions(interest_raw)
+                        # Interest expense is often reported as negative; store as positive
+                        if ad.interest_expense is not None and ad.interest_expense < 0:
+                            ad.interest_expense = abs(ad.interest_expense)
 
-                    op_income_raw = safe_get(inc_df, date_col,
-                                              standards=["OperatingIncome"],
-                                              concepts=["us-gaap_OperatingIncomeLoss"])
-                    ad.operating_income = to_millions(op_income_raw)
+                    if ad.operating_income is None:
+                        op_income_raw = safe_get(inc_df, date_col,
+                                                  standards=["OperatingIncome"],
+                                                  concepts=["us-gaap_OperatingIncomeLoss"])
+                        ad.operating_income = to_millions(op_income_raw)
 
-                    # Income tax expense
-                    tax_raw = safe_get(inc_df, date_col,
-                                       concepts=["us-gaap_IncomeTaxExpenseBenefit"])
-                    ad.income_tax_expense = to_millions(tax_raw)
+                    if ad.income_tax_expense is None:
+                        tax_raw = safe_get(inc_df, date_col,
+                                           concepts=["us-gaap_IncomeTaxExpenseBenefit"])
+                        ad.income_tax_expense = to_millions(tax_raw)
 
-                    # Pre-tax income
-                    pretax_raw = safe_get(inc_df, date_col,
-                                          concepts=["us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
-                                                    "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"])
-                    ad.pretax_income = to_millions(pretax_raw)
+                    if ad.pretax_income is None:
+                        pretax_raw = safe_get(inc_df, date_col,
+                                              concepts=["us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesExtraordinaryItemsNoncontrollingInterest",
+                                                        "us-gaap_IncomeLossFromContinuingOperationsBeforeIncomeTaxesMinorityInterestAndIncomeLossFromEquityMethodInvestments"])
+                        ad.pretax_income = to_millions(pretax_raw)
 
-                    shares_diluted_raw = safe_get(inc_df, date_col,
-                                                   standards=["SharesFullyDilutedAverage"],
-                                                   concepts=["us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding"])
-                    if shares_diluted_raw:
-                        ad.shares_outstanding = to_millions(shares_diluted_raw)
+                    if ad.shares_outstanding is None:
+                        shares_diluted_raw = safe_get(inc_df, date_col,
+                                                       standards=["SharesFullyDilutedAverage"],
+                                                       concepts=["us-gaap_WeightedAverageNumberOfDilutedSharesOutstanding"])
+                        if shares_diluted_raw:
+                            ad.shares_outstanding = to_millions(shares_diluted_raw)
 
                 # === BALANCE SHEET ===
                 # BS has fewer date columns than IS/CF, so fill missing fields
