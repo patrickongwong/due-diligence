@@ -1,18 +1,36 @@
 # Due Diligence
 
-Equity research due diligence toolkit for Claude Code. Generates PDF reports for any stock ticker.
-
-These skills are part of the first phase of a Due Diligence. The first phase is mainly are about getting a rough picture about a company before any further work is put in.
+Equity research due diligence toolkit for Claude Code. A structured, multi-phase process for researching any publicly traded company.
 
 ## Skills
 
+### Phase 1 — First Look
+
+Get a rough picture of a company before committing to deeper work. Each skill produces a standalone PDF report.
+
 | Command | What It Does |
 |---------|-------------|
+| `/dd-phase1 TICKER` | **Run all five Phase 1 skills in parallel** |
 | `/dd-1bear TICKER` | Bear Case One-Pager — bearish theses from analysts, investors, journalists |
 | `/dd-1honesty TICKER` | Management Honesty Check — did management deliver on projections? |
 | `/dd-1ind TICKER` | Industry Analysis — market share, competitors, ecosystem |
 | `/dd-1vl TICKER` | Value Line One-Pager — 15 years of financials on one page |
 | `/dd-price-chart TICKER` | Annotated Price Chart — price history with event annotations |
+
+### Phase 2 — Deep Dive
+
+Build the research infrastructure for serious analysis.
+
+| Command | What It Does |
+|---------|-------------|
+| `/dd-2dataroom TICKER` | Dataroom — index of all SEC filings, proxy statements, shareholder letters, earnings transcripts |
+| `/dd-2financials TICKER` | Financial Statements — multi-year IS/BS/CF extraction to JSON + formatted Excel |
+
+### Utility
+
+| Command | What It Does |
+|---------|-------------|
+| `/dd-zettelfy` | Assign zettel IDs to new prospect folders in `dd Due Diligence/` |
 
 ## Installation
 
@@ -34,7 +52,7 @@ This clones the repo to `~/.claude/plugins/marketplaces/due-diligence/` and read
 claude plugin install due-diligence
 ```
 
-This copies the plugin's skills into Claude Code's cache at `~/.claude/plugins/cache/due-diligence/due-diligence/1.0.0/`. The 5 slash commands (`/dd-1bear`, `/dd-1honesty`, `/dd-1ind`, `/dd-1vl`, `/dd-price-chart`) are now available in any Claude Code session.
+This copies the plugin's skills into Claude Code's cache at `~/.claude/plugins/cache/due-diligence/due-diligence/1.0.0/`. All slash commands are now available in any Claude Code session.
 
 ### Step 3: Install Python dependencies
 
@@ -87,16 +105,21 @@ claude config set env.EDGAR_IDENTITY "Jane Doe jane@example.com"
 Each skill is invoked as a slash command in Claude Code:
 
 ```
-> /dd-1bear AAPL
-> /dd-1honesty TSLA
-> /dd-1ind MSFT
+> /dd-phase1 AAPL           # run all Phase 1 reports in parallel
+> /dd-1bear AAPL             # or run individually
 > /dd-1vl GOOG
 > /dd-price-chart AMZN 2015-2025
+
+> /dd-zettelfy               # organize new prospect folders
+> /dd-2dataroom AAPL         # build the filing index
+> /dd-2financials AAPL       # extract financial statements
 ```
 
-Reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-diligence/<TICKER>/`).
+Phase 1 PDF reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-diligence/<TICKER>/`). Phase 2 outputs go into the `dd Due Diligence/` Zettelkasten structure.
 
 ### What each skill produces
+
+**`/dd-phase1`** — Orchestrator that dispatches all five Phase 1 skills in parallel for a ticker.
 
 **`/dd-1bear`** — Compiles the strongest bearish arguments against a stock. Researches sell-side analyst downgrades, famous short-sellers, and financial journalist bear theses. Fact-checks everything. Outputs a one-page PDF with thematic bear theses and clickable source links.
 
@@ -107,6 +130,12 @@ Reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-diligence/<TICK
 **`/dd-1vl`** — Fetches 15 years of financial data from SEC EDGAR and Yahoo Finance. Renders a dense, Value Line-style single-page PDF with historical financials, price chart, capital structure, quarterly data, growth rates, and ROIC.
 
 **`/dd-price-chart`** — Fetches price history, detects significant moves, researches what caused each one, fact-checks the headlines, and renders a publication-quality annotated price chart with an event reference table.
+
+**`/dd-zettelfy`** — Scans `dd Due Diligence/` for prospect folders without zettel IDs, assigns sequential IDs, creates child zettels with PDF links, renames folders, and updates the parent index. Idempotent — safe to run repeatedly.
+
+**`/dd-2dataroom`** — Creates a Dataroom zettel with child zettels linking to every SEC filing (10-K/20-F, 10-Q, DEF 14A), shareholder letter, investor presentation, and earnings call transcript. Uses edgartools for EDGAR filings and web search for transcripts and letters.
+
+**`/dd-2financials`** — Extracts multi-year financial statements (IS, BS, CF) and computes operating metrics tailored to the company type (bank vs. corporate vs. software). Outputs a JSON data file and an IB-formatted Excel workbook. Supports both EDGAR/XBRL extraction (US stocks) and PDF harvesting (Canadian/international).
 
 ## License
 
