@@ -15,7 +15,7 @@ Phase 1 due diligence generates five independent research reports on a single ti
 | Industry analysis | `/dd-1ind` | `{TICKER}_Industry_Analysis.pdf` — market share, competitors, ecosystem |
 | Management honesty check | `/dd-1honesty` | `{TICKER}_Honesty_Check.pdf` — projections vs. actuals |
 | Bear case | `/dd-1bear` | `{TICKER}_Bear_Case_One_Pager.pdf` — strongest bearish arguments |
-| Annotated price chart | `/dd-price-chart` | `{TICKER}_annotated_price_chart.pdf` — price history with event annotations |
+| Annotated price chart | `/dd-1price-chart` | `{TICKER}_annotated_price_chart.pdf` — price history with event annotations |
 
 All outputs land in the same folder (typically `dd Due Diligence/<TICKER>/` or `$DD_OUTPUT_DIR/<TICKER>/`).
 
@@ -45,7 +45,7 @@ The five skill names to invoke are:
 - `dd-1ind` with args: `"{TICKER}"`
 - `dd-1honesty` with args: `"{TICKER}"`
 - `dd-1bear` with args: `"{TICKER}"`
-- `dd-price-chart` with args: `"{TICKER}"`
+- `dd-1price-chart` with args: `"{TICKER}"`
 
 ### 3. Monitor and report
 
@@ -68,4 +68,4 @@ If any report fails, note the failure and offer to retry just that one.
 
 - The Value Line report (`dd-1vl`) uses a Python script and may need dependencies installed. If it fails on first run, check the error — it often just needs `pip install` for a missing package.
 - For Canadian or international tickers (e.g., `CSU.TO`), all five skills support them, but data availability may vary.
-- If the user wants to customize the price chart timeframe (e.g., 5Y instead of max), they should run `/dd-price-chart` separately with the timeframe argument after Phase 1 completes.
+- If the user wants to customize the price chart timeframe (e.g., 5Y instead of max), they should run `/dd-1price-chart` separately with the timeframe argument after Phase 1 completes.

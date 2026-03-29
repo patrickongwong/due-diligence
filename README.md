@@ -15,7 +15,7 @@ Get a rough picture of a company before committing to deeper work. Each skill pr
 | `/dd-1honesty TICKER` | Management Honesty Check — did management deliver on projections? |
 | `/dd-1ind TICKER` | Industry Analysis — market share, competitors, ecosystem |
 | `/dd-1vl TICKER` | Value Line One-Pager — 15 years of financials on one page |
-| `/dd-price-chart TICKER` | Annotated Price Chart — price history with event annotations |
+| `/dd-1price-chart TICKER` | Annotated Price Chart — price history with event annotations |
 
 ### Phase 2 — Deep Dive
 
@@ -108,7 +108,7 @@ Each skill is invoked as a slash command in Claude Code:
 > /dd-phase1 AAPL           # run all Phase 1 reports in parallel
 > /dd-1bear AAPL             # or run individually
 > /dd-1vl GOOG
-> /dd-price-chart AMZN 2015-2025
+> /dd-1price-chart AMZN 2015-2025
 
 > /dd-zettelfy               # organize new prospect folders
 > /dd-2dataroom AAPL         # build the filing index
@@ -129,7 +129,7 @@ Phase 1 PDF reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-dil
 
 **`/dd-1vl`** — Fetches 15 years of financial data from SEC EDGAR and Yahoo Finance. Renders a dense, Value Line-style single-page PDF with historical financials, price chart, capital structure, quarterly data, growth rates, and ROIC.
 
-**`/dd-price-chart`** — Fetches price history, detects significant moves, researches what caused each one, fact-checks the headlines, and renders a publication-quality annotated price chart with an event reference table.
+**`/dd-1price-chart`** — Fetches price history, detects significant moves, researches what caused each one, fact-checks the headlines, and renders a publication-quality annotated price chart with an event reference table.
 
 **`/dd-zettelfy`** — Scans `dd Due Diligence/` for prospect folders without zettel IDs, assigns sequential IDs, creates child zettels with PDF links, renames folders, and updates the parent index. Idempotent — safe to run repeatedly.
 

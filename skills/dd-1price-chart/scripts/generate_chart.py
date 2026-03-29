@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-generate_chart.py -- Matplotlib chart rendering engine for dd-price-chart skill.
+generate_chart.py -- Matplotlib chart rendering engine for dd-1price-chart skill.
 
 Reads a JSON input file and produces a publication-quality annotated stock
 price chart as a PNG.

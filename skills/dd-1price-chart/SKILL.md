@@ -1,6 +1,6 @@
 ---
-name: dd-price-chart
-description: Generate an annotated historical stock price chart for any ticker as part of Due Diligence. Fetches price data from Yahoo Finance, identifies significant price movements, web-searches for headlines explaining each move, fact-checks with a subagent, and renders a publication-quality PNG. Use when the user says /dd-price-chart, asks for an "annotated price chart", "historical price chart for DD", "price chart with events", or wants a visual price history for a stock they're researching. Also trigger when the user says "chart this stock" or "show me the price history of X with annotations".
+name: dd-1price-chart
+description: Generate an annotated historical stock price chart for any ticker as part of Due Diligence. Fetches price data from Yahoo Finance, identifies significant price movements, web-searches for headlines explaining each move, fact-checks with a subagent, and renders a publication-quality PNG. Use when the user says /dd-1price-chart, asks for an "annotated price chart", "historical price chart for DD", "price chart with events", or wants a visual price history for a stock they're researching. Also trigger when the user says "chart this stock" or "show me the price history of X with annotations".
 ---
 
 # DD Price Chart
@@ -84,7 +84,7 @@ Use the validated list going forward.
 
 ## Phase 3: Generate PDF
 
-Run the PDF generation script: `python3 $CLAUDE_PLUGIN_ROOT/skills/dd-price-chart/scripts/generate_pdf.py`
+Run the PDF generation script: `python3 $CLAUDE_PLUGIN_ROOT/skills/dd-1price-chart/scripts/generate_pdf.py`
 
 Pass data via a temporary JSON file written by the skill before calling the script. The JSON contains:
 ```json
