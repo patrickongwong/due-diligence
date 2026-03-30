@@ -38,20 +38,29 @@ The JSON file should have this structure:
 }
 """
 
-import sys, os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '_shared'))
+import os
+import sys
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "..", "_shared"))
 from auto_install import ensure_installed
-ensure_installed('reportlab')
+
+ensure_installed("reportlab")
 
 import json
-from reportlab.lib.pagesizes import letter
-from reportlab.lib.units import inch
+
 from reportlab.lib.colors import HexColor, white
+from reportlab.lib.enums import TA_CENTER, TA_LEFT
+from reportlab.lib.pagesizes import letter
 from reportlab.lib.styles import ParagraphStyle
-from reportlab.lib.enums import TA_LEFT, TA_CENTER
+from reportlab.lib.units import inch
 from reportlab.platypus import (
-    SimpleDocTemplate, Paragraph, Spacer, Table, TableStyle,
-    HRFlowable, KeepTogether
+    HRFlowable,
+    KeepTogether,
+    Paragraph,
+    SimpleDocTemplate,
+    Spacer,
+    Table,
+    TableStyle,
 )
 
 # ── Colors ──
@@ -68,41 +77,110 @@ WHITE = white
 # ── Styles ──
 styles = {}
 styles["title"] = ParagraphStyle(
-    "title", fontName="Helvetica-Bold", fontSize=22, leading=26,
-    textColor=WHITE, alignment=TA_LEFT)
+    "title",
+    fontName="Helvetica-Bold",
+    fontSize=22,
+    leading=26,
+    textColor=WHITE,
+    alignment=TA_LEFT,
+)
 styles["subtitle"] = ParagraphStyle(
-    "subtitle", fontName="Helvetica", fontSize=10, leading=13,
-    textColor=HexColor("#cccccc"), alignment=TA_LEFT)
+    "subtitle",
+    fontName="Helvetica",
+    fontSize=10,
+    leading=13,
+    textColor=HexColor("#cccccc"),
+    alignment=TA_LEFT,
+)
 styles["section_head"] = ParagraphStyle(
-    "section_head", fontName="Helvetica-Bold", fontSize=11, leading=14,
-    textColor=ACCENT_RED, spaceBefore=10, spaceAfter=4)
+    "section_head",
+    fontName="Helvetica-Bold",
+    fontSize=11,
+    leading=14,
+    textColor=ACCENT_RED,
+    spaceBefore=10,
+    spaceAfter=4,
+)
 styles["body"] = ParagraphStyle(
-    "body", fontName="Helvetica", fontSize=8.5, leading=11.5,
-    textColor=TEXT_DARK, spaceBefore=0, spaceAfter=3)
+    "body",
+    fontName="Helvetica",
+    fontSize=8.5,
+    leading=11.5,
+    textColor=TEXT_DARK,
+    spaceBefore=0,
+    spaceAfter=3,
+)
 styles["source"] = ParagraphStyle(
-    "source", fontName="Helvetica", fontSize=7, leading=9,
-    textColor=LINK_BLUE, spaceBefore=0, spaceAfter=1, leftIndent=10)
+    "source",
+    fontName="Helvetica",
+    fontSize=7,
+    leading=9,
+    textColor=LINK_BLUE,
+    spaceBefore=0,
+    spaceAfter=1,
+    leftIndent=10,
+)
 styles["kv_label"] = ParagraphStyle(
-    "kv_label", fontName="Helvetica", fontSize=8, leading=10,
-    textColor=TEXT_LIGHT, alignment=TA_CENTER)
+    "kv_label",
+    fontName="Helvetica",
+    fontSize=8,
+    leading=10,
+    textColor=TEXT_LIGHT,
+    alignment=TA_CENTER,
+)
 styles["kv_value"] = ParagraphStyle(
-    "kv_value", fontName="Helvetica-Bold", fontSize=12, leading=15,
-    textColor=TEXT_DARK, alignment=TA_CENTER)
+    "kv_value",
+    fontName="Helvetica-Bold",
+    fontSize=12,
+    leading=15,
+    textColor=TEXT_DARK,
+    alignment=TA_CENTER,
+)
 styles["kv_value_red"] = ParagraphStyle(
-    "kv_value_red", fontName="Helvetica-Bold", fontSize=12, leading=15,
-    textColor=ACCENT_RED, alignment=TA_CENTER)
+    "kv_value_red",
+    fontName="Helvetica-Bold",
+    fontSize=12,
+    leading=15,
+    textColor=ACCENT_RED,
+    alignment=TA_CENTER,
+)
 styles["bear_name"] = ParagraphStyle(
-    "bear_name", fontName="Helvetica-Bold", fontSize=8, leading=10,
-    textColor=TEXT_DARK, spaceBefore=0, spaceAfter=0)
+    "bear_name",
+    fontName="Helvetica-Bold",
+    fontSize=8,
+    leading=10,
+    textColor=TEXT_DARK,
+    spaceBefore=0,
+    spaceAfter=0,
+)
 styles["bear_detail"] = ParagraphStyle(
-    "bear_detail", fontName="Helvetica", fontSize=7.5, leading=10,
-    textColor=TEXT_MED, spaceBefore=0, spaceAfter=0)
+    "bear_detail",
+    fontName="Helvetica",
+    fontSize=7.5,
+    leading=10,
+    textColor=TEXT_MED,
+    spaceBefore=0,
+    spaceAfter=0,
+)
 styles["footer"] = ParagraphStyle(
-    "footer", fontName="Helvetica", fontSize=6.5, leading=8,
-    textColor=TEXT_LIGHT, alignment=TA_CENTER)
+    "footer",
+    fontName="Helvetica",
+    fontSize=6.5,
+    leading=8,
+    textColor=TEXT_LIGHT,
+    alignment=TA_CENTER,
+)
 styles["closing"] = ParagraphStyle(
-    "closing", fontName="Helvetica-Oblique", fontSize=8.5, leading=11.5,
-    textColor=TEXT_MED, spaceBefore=6, spaceAfter=2, leftIndent=10, rightIndent=10)
+    "closing",
+    fontName="Helvetica-Oblique",
+    fontSize=8.5,
+    leading=11.5,
+    textColor=TEXT_MED,
+    spaceBefore=6,
+    spaceAfter=2,
+    leftIndent=10,
+    rightIndent=10,
+)
 
 
 def make_link(url, text=None):
@@ -117,18 +195,23 @@ def build_header(data):
         f"The strongest arguments against {data['company_name']} from the smartest bears"
         f"&nbsp;&nbsp;|&nbsp;&nbsp;{data['date']}&nbsp;&nbsp;|&nbsp;&nbsp;"
         f"{data['price']}&nbsp;&nbsp;|&nbsp;&nbsp;Mkt Cap {data['market_cap']}",
-        styles["subtitle"])
+        styles["subtitle"],
+    )
     t = Table([[title], [subtitle]], colWidths=[7.5 * inch])
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), DARK_BG),
-        ("LEFTPADDING", (0, 0), (-1, -1), 12),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 12),
-        ("TOPPADDING", (0, 0), (0, 0), 10),
-        ("BOTTOMPADDING", (0, 0), (0, 0), 2),
-        ("TOPPADDING", (0, 1), (0, 1), 0),
-        ("BOTTOMPADDING", (0, 1), (0, 1), 10),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
+    t.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), DARK_BG),
+                ("LEFTPADDING", (0, 0), (-1, -1), 12),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 12),
+                ("TOPPADDING", (0, 0), (0, 0), 10),
+                ("BOTTOMPADDING", (0, 0), (0, 0), 2),
+                ("TOPPADDING", (0, 1), (0, 1), 0),
+                ("BOTTOMPADDING", (0, 1), (0, 1), 10),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ]
+        )
+    )
     return t
 
 
@@ -137,33 +220,48 @@ def build_snapshot(metrics):
     for m in metrics:
         val_style = styles["kv_value_red"] if m["is_bearish"] else styles["kv_value"]
         mt = Table(
-            [[Paragraph(m["value"], val_style)], [Paragraph(m["label"], styles["kv_label"])]],
-            colWidths=[0.9 * inch], rowHeights=[18, 12])
-        mt.setStyle(TableStyle([
-            ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-            ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-            ("TOPPADDING", (0, 0), (-1, -1), 2),
-            ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
-        ]))
+            [
+                [Paragraph(m["value"], val_style)],
+                [Paragraph(m["label"], styles["kv_label"])],
+            ],
+            colWidths=[0.9 * inch],
+            rowHeights=[18, 12],
+        )
+        mt.setStyle(
+            TableStyle(
+                [
+                    ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                    ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                    ("TOPPADDING", (0, 0), (-1, -1), 2),
+                    ("BOTTOMPADDING", (0, 0), (-1, -1), 2),
+                ]
+            )
+        )
         mini_tables.append(mt)
     n = len(mini_tables) or 8
     snap = Table([mini_tables], colWidths=[7.5 * inch / n] * n)
-    snap.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GRAY),
-        ("ALIGN", (0, 0), (-1, -1), "CENTER"),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-        ("TOPPADDING", (0, 0), (-1, -1), 4),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
-        ("LINEAFTER", (0, 0), (-2, -1), 0.5, MED_GRAY),
-    ]))
+    snap.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, -1), LIGHT_GRAY),
+                ("ALIGN", (0, 0), (-1, -1), "CENTER"),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+                ("TOPPADDING", (0, 0), (-1, -1), 4),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 4),
+                ("LINEAFTER", (0, 0), (-2, -1), 0.5, MED_GRAY),
+            ]
+        )
+    )
     return snap
 
 
 def build_analyst_table(analysts):
     if not analysts:
         return Spacer(1, 0)
-    header = [Paragraph(f"<b>{h}</b>", styles["body"])
-              for h in ["Analyst", "Firm", "Date", "Rating", "PT", "Downside"]]
+    header = [
+        Paragraph(f"<b>{h}</b>", styles["body"])
+        for h in ["Analyst", "Firm", "Date", "Rating", "PT", "Downside"]
+    ]
     rows = [header]
     for a in analysts:
         rating_text = a.get("rating", "")
@@ -174,37 +272,56 @@ def build_analyst_table(analysts):
         downside = a.get("downside", "n/a")
         if downside.startswith("-"):
             downside = f"<font color='#c0392b'>{downside}</font>"
-        rows.append([
-            Paragraph(a.get("name", ""), styles["bear_detail"]),
-            Paragraph(a.get("firm", ""), styles["bear_detail"]),
-            Paragraph(a.get("date", ""), styles["bear_detail"]),
-            Paragraph(rating_text, styles["bear_detail"]),
-            Paragraph(a.get("pt", "n/a"), styles["bear_detail"]),
-            Paragraph(downside, styles["bear_detail"]),
-        ])
-    t = Table(rows, colWidths=[1.15*inch, 1.25*inch, 0.9*inch, 1.4*inch, 0.6*inch, 2.2*inch])
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), DARK_BG),
-        ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [LIGHT_GRAY, WHITE]),
-        ("FONTSIZE", (0, 0), (-1, -1), 7.5),
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ("LEFTPADDING", (0, 0), (-1, -1), 5),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-        ("GRID", (0, 0), (-1, -1), 0.5, MED_GRAY),
-        ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
-    ]))
+        rows.append(
+            [
+                Paragraph(a.get("name", ""), styles["bear_detail"]),
+                Paragraph(a.get("firm", ""), styles["bear_detail"]),
+                Paragraph(a.get("date", ""), styles["bear_detail"]),
+                Paragraph(rating_text, styles["bear_detail"]),
+                Paragraph(a.get("pt", "n/a"), styles["bear_detail"]),
+                Paragraph(downside, styles["bear_detail"]),
+            ]
+        )
+    t = Table(
+        rows,
+        colWidths=[
+            1.15 * inch,
+            1.25 * inch,
+            0.9 * inch,
+            1.4 * inch,
+            0.6 * inch,
+            2.2 * inch,
+        ],
+    )
+    t.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), DARK_BG),
+                ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [LIGHT_GRAY, WHITE]),
+                ("FONTSIZE", (0, 0), (-1, -1), 7.5),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                ("GRID", (0, 0), (-1, -1), 0.5, MED_GRAY),
+                ("VALIGN", (0, 0), (-1, -1), "MIDDLE"),
+            ]
+        )
+    )
     return t
 
 
 def build_thesis_section(thesis):
     elements = []
-    elements.append(Paragraph(f"{thesis['number']}. {thesis['title']}", styles["section_head"]))
+    elements.append(
+        Paragraph(f"{thesis['number']}. {thesis['title']}", styles["section_head"])
+    )
     elements.append(Paragraph(thesis["body"], styles["body"]))
     for src in thesis.get("sources", []):
-        elements.append(Paragraph(
-            f"&rarr; {make_link(src['url'], src['label'])}", styles["source"]))
+        elements.append(
+            Paragraph(f"&rarr; {make_link(src['url'], src['label'])}", styles["source"])
+        )
     elements.append(Spacer(1, 4))
     return KeepTogether(elements)
 
@@ -212,39 +329,57 @@ def build_thesis_section(thesis):
 def build_notable_bears(bears):
     if not bears:
         return Spacer(1, 0)
-    header = [Paragraph(f"<b>{h}</b>", styles["body"])
-              for h in ["Who", "When", "Action", "Key Argument", "Source"]]
+    header = [
+        Paragraph(f"<b>{h}</b>", styles["body"])
+        for h in ["Who", "When", "Action", "Key Argument", "Source"]
+    ]
     rows = [header]
     for b in bears:
-        rows.append([
-            Paragraph(b.get("who", ""), styles["bear_name"]),
-            Paragraph(b.get("when", ""), styles["bear_detail"]),
-            Paragraph(b.get("action", ""), styles["bear_detail"]),
-            Paragraph(b.get("argument", ""), styles["bear_detail"]),
-            Paragraph(make_link(b.get("source_url", "#"), b.get("source_label", "Source")),
-                      styles["source"]),
-        ])
-    t = Table(rows, colWidths=[1.2*inch, 0.9*inch, 1.2*inch, 2.7*inch, 1.5*inch])
-    t.setStyle(TableStyle([
-        ("BACKGROUND", (0, 0), (-1, 0), DARK_BG),
-        ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
-        ("ROWBACKGROUNDS", (0, 1), (-1, -1), [LIGHT_GRAY, WHITE]),
-        ("FONTSIZE", (0, 0), (-1, -1), 7.5),
-        ("TOPPADDING", (0, 0), (-1, -1), 3),
-        ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
-        ("LEFTPADDING", (0, 0), (-1, -1), 5),
-        ("RIGHTPADDING", (0, 0), (-1, -1), 5),
-        ("GRID", (0, 0), (-1, -1), 0.5, MED_GRAY),
-        ("VALIGN", (0, 0), (-1, -1), "TOP"),
-    ]))
+        rows.append(
+            [
+                Paragraph(b.get("who", ""), styles["bear_name"]),
+                Paragraph(b.get("when", ""), styles["bear_detail"]),
+                Paragraph(b.get("action", ""), styles["bear_detail"]),
+                Paragraph(b.get("argument", ""), styles["bear_detail"]),
+                Paragraph(
+                    make_link(
+                        b.get("source_url", "#"), b.get("source_label", "Source")
+                    ),
+                    styles["source"],
+                ),
+            ]
+        )
+    t = Table(
+        rows, colWidths=[1.2 * inch, 0.9 * inch, 1.2 * inch, 2.7 * inch, 1.5 * inch]
+    )
+    t.setStyle(
+        TableStyle(
+            [
+                ("BACKGROUND", (0, 0), (-1, 0), DARK_BG),
+                ("TEXTCOLOR", (0, 0), (-1, 0), WHITE),
+                ("ROWBACKGROUNDS", (0, 1), (-1, -1), [LIGHT_GRAY, WHITE]),
+                ("FONTSIZE", (0, 0), (-1, -1), 7.5),
+                ("TOPPADDING", (0, 0), (-1, -1), 3),
+                ("BOTTOMPADDING", (0, 0), (-1, -1), 3),
+                ("LEFTPADDING", (0, 0), (-1, -1), 5),
+                ("RIGHTPADDING", (0, 0), (-1, -1), 5),
+                ("GRID", (0, 0), (-1, -1), 0.5, MED_GRAY),
+                ("VALIGN", (0, 0), (-1, -1), "TOP"),
+            ]
+        )
+    )
     return t
 
 
 def generate_pdf(data, output_path):
     doc = SimpleDocTemplate(
-        output_path, pagesize=letter,
-        leftMargin=0.5*inch, rightMargin=0.5*inch,
-        topMargin=0.4*inch, bottomMargin=0.4*inch)
+        output_path,
+        pagesize=letter,
+        leftMargin=0.5 * inch,
+        rightMargin=0.5 * inch,
+        topMargin=0.4 * inch,
+        bottomMargin=0.4 * inch,
+    )
 
     story = []
 
@@ -273,7 +408,9 @@ def generate_pdf(data, output_path):
     # Notable bears
     if data.get("notable_bears"):
         story.append(Spacer(1, 4))
-        story.append(Paragraph("NOTABLE BEARS: WHO'S SELLING AND WHY", styles["section_head"]))
+        story.append(
+            Paragraph("NOTABLE BEARS: WHO'S SELLING AND WHY", styles["section_head"])
+        )
         story.append(build_notable_bears(data["notable_bears"]))
 
     # Closing
@@ -285,11 +422,14 @@ def generate_pdf(data, output_path):
     story.append(Spacer(1, 6))
     story.append(HRFlowable(width="100%", thickness=0.5, color=MED_GRAY))
     story.append(Spacer(1, 3))
-    story.append(Paragraph(
-        f"Compiled {data.get('date', 'today')} by Januarius Holdings Inc. "
-        "All sources publicly available. This document is for informational purposes only "
-        "and does not constitute investment advice. All links are clickable in this PDF.",
-        styles["footer"]))
+    story.append(
+        Paragraph(
+            f"Compiled {data.get('date', 'today')} by Januarius Holdings Inc. "
+            "All sources publicly available. This document is for informational purposes only "
+            "and does not constitute investment advice. All links are clickable in this PDF.",
+            styles["footer"],
+        )
+    )
 
     doc.build(story)
     print(f"PDF saved to: {output_path}")

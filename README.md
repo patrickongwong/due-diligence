@@ -2,6 +2,8 @@
 
 Equity research due diligence toolkit for Claude Code. A structured, multi-phase process for researching any publicly traded company.
 
+Some of these skills are meant to work with a notetaking system such as Obsidian + Zettelkasten.
+
 ## Skills
 
 ### Phase 1 — First Look
