@@ -25,6 +25,7 @@ Build the research infrastructure for serious analysis.
 |---------|-------------|
 | `/dd-2dataroom TICKER` | Dataroom — index of all SEC filings, proxy statements, shareholder letters, earnings transcripts |
 | `/dd-2financials TICKER` | Financial Statements — multi-year IS/BS/CF extraction to JSON + formatted Excel |
+| `/dd-2super-commentaries TICKER` | Superinvestor Commentaries — what the smartest money has publicly said about a stock |
 
 ### Utility
 
@@ -113,6 +114,7 @@ Each skill is invoked as a slash command in Claude Code:
 > /dd-zettelfy               # organize new prospect folders
 > /dd-2dataroom AAPL         # build the filing index
 > /dd-2financials AAPL       # extract financial statements
+> /dd-2super-commentaries AAPL  # collect superinvestor commentary
 ```
 
 Phase 1 PDF reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-diligence/<TICKER>/`). Phase 2 outputs go into the `dd Due Diligence/` Zettelkasten structure.
@@ -136,6 +138,8 @@ Phase 1 PDF reports are saved to `$DD_OUTPUT_DIR/<TICKER>/` (default: `./due-dil
 **`/dd-2dataroom`** — Creates a Dataroom zettel with child zettels linking to every SEC filing (10-K/20-F, 10-Q, DEF 14A), shareholder letter, investor presentation, and earnings call transcript. Uses edgartools for EDGAR filings and web search for transcripts and letters.
 
 **`/dd-2financials`** — Extracts multi-year financial statements (IS, BS, CF) and computes operating metrics tailored to the company type (bank vs. corporate vs. software). Outputs a JSON data file and an IB-formatted Excel workbook. Supports both EDGAR/XBRL extraction (US stocks) and PDF harvesting (Canadian/international).
+
+**`/dd-2super-commentaries`** — Identifies which superinvestors from the vault's master list own a stock, then collects every piece of public commentary they've produced about it — shareholder letters, quarterly commentaries, podcasts, interviews, conference presentations, and articles. Creates a structured zettel tree under the ticker's Data Room with one child zettel per investor containing clickable links to all their commentaries.
 
 ## License
 
