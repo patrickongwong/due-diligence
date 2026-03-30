@@ -152,7 +152,36 @@ For the IS structure, use whatever structure matches the company:
 
 The Operating Metrics tab should also be organized into sections relevant to this company.
 
-### Step 6: Link in the Dataroom zettel
+### Step 6: Audit summations and create v2 with formulas
+
+After the initial Excel is built, audit every summation row for correctness and replace hardcoded totals with live Excel formulas. This step catches missing line items and rounding discrepancies.
+
+**Summation rows to audit (at minimum):**
+- IS: Total revenue, Total expenses, Income before taxes, Total income tax, Net income
+- BS: Total current assets, Total non-current assets, Total assets, Total current liabilities, Total non-current liabilities, Total liabilities, Total equity, Total L&E
+- CF: Net cash from operating, Net cash from investing, Net cash from financing, Net change in cash, Cash end of period
+
+**For each summation row:**
+1. Replace the hardcoded value with an **Excel SUM or addition formula** referencing the component rows (e.g., `=SUM(C6:C9)` for Total revenue)
+2. Compare what the formula produces against the PDF-reported total
+3. If they differ by more than $0.5M, insert a **"(reported)"** row directly below the formula row containing the original PDF-stated value, formatted in **red italic** font
+4. The formula row is the "live" version; the "(reported)" row preserves the auditor-friendly PDF source value
+
+**When discrepancies indicate missing line items** (e.g., Current Liabilities formula is $500M below the reported total), go back to the source PDFs and extract the missing items. Common culprits:
+- **Balance Sheet Current Liabilities**: Often missing bank debt/credit facilities, dividends payable, provisions, acquisition holdback payables, lease obligations, income taxes payable, redeemable preferred securities, TSS/IRGA membership liabilities
+- **Balance Sheet Non-Current Liabilities**: Often missing individual debt facilities, debentures, deferred income taxes, acquisition holdbacks, lease obligations, other liabilities
+- **Cash Flow Financing Activities**: Often missing credit facility movements (CSI facility, revolving credit, term debt proceeds/repayments), debt transaction costs, lease payments, distributions to minority owners, bank indebtedness changes
+- **Cash Flow Operating Activities**: May be missing non-cash adjustments like equity investee income, depreciation of third-party costs, finance income (in IFRS presentations where these are CF adjustments)
+
+**Accounting standard transitions** (e.g., Canadian GAAP → IFRS) will naturally produce different line items across years. Handle this by:
+- Showing IFRS nature-format expense lines (Staff, Hardware, Third party, etc.) for IFRS years
+- Showing GAAP functional-format lines (COGS, R&D, S&M, G&A) for GAAP years
+- Keeping both sets of rows in the same sheet — cells are simply blank for years where that format doesn't apply
+- Reporting individual expense lines (Travel, Telecom, Supplies, Software & equipment) separately when the source reports them that way, rather than combining them
+
+**Output:** Save as `{zettel_prefix} {TICKER} Financial Statements v2.xlsx` alongside the original. The v2 is the audited version with formulas; the original preserves the initial extraction.
+
+### Step 7: Link in the Dataroom zettel
 
 If the user's vault uses Zettelkasten with Obsidian:
 
@@ -160,9 +189,9 @@ If the user's vault uses Zettelkasten with Obsidian:
 2. Create a new zettel with YAML frontmatter, an embed link to the Excel file, and source/date notes
 3. Add a wikilink in the Dataroom zettel
 
-### Step 7: Report to the user
+### Step 8: Report to the user
 
-Summarize: JSON path, Excel path with sheet names and period coverage, any data gaps, Dataroom link.
+Summarize: JSON path, Excel path (original + v2) with sheet names and period coverage, any data gaps or discrepancies found during audit, and Dataroom link.
 
 ## Dependencies
 
