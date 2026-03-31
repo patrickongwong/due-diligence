@@ -22,11 +22,14 @@ Every company reports differently. A bank's income statement looks nothing like 
 
 1. **JSON data file** (`{zettel_prefix} {TICKER}.json`) — at `dd Due Diligence/` level per the DD CLAUDE.md convention. Contains all financial statement line items and computed operating metrics with source attribution.
 
-2. **Excel workbook** (`{zettel_prefix} {TICKER} Financial Statements.xlsx`) — in the ticker's Dataroom folder. Contains 4 tabs:
-   - Income Statement
-   - Balance Sheet
-   - Cash Flow Statement
+2. **Excel workbook** (`{zettel_prefix} {TICKER} Financial Statements.xlsx`) — in the ticker's Dataroom folder. Contains 7 tabs:
+   - Income Statement (with SUM formulas + "(reported)" verification rows)
+   - Balance Sheet (with SUM formulas + "(reported)" verification rows)
+   - Cash Flow Statement (with SUM formulas + "(reported)" verification rows)
    - Operating Metrics
+   - Vertical Common Size (each item as % of Revenue/Total Assets)
+   - Horizontal Common Size (YoY % change)
+   - DuPont Analysis (3-factor + 5-factor ROE decomposition)
 
 3. **Dataroom link** — if the user has a Zettelkasten in Obsidian, append a wikilink to the Dataroom zettel.
 
@@ -152,9 +155,9 @@ For the IS structure, use whatever structure matches the company:
 
 The Operating Metrics tab should also be organized into sections relevant to this company.
 
-### Step 6: Audit summations and create v2 with formulas
+### Step 6: Audit summations and add formula verification
 
-After the initial Excel is built, audit every summation row for correctness and replace hardcoded totals with live Excel formulas. This step catches missing line items and rounding discrepancies.
+After the Excel is built, audit every summation row for correctness and replace hardcoded totals with live Excel formulas. This step catches missing line items and rounding discrepancies.
 
 **Summation rows to audit (at minimum):**
 - IS: Total revenue, Total expenses, Income before taxes, Total income tax, Net income
@@ -164,7 +167,7 @@ After the initial Excel is built, audit every summation row for correctness and 
 **For each summation row:**
 1. Replace the hardcoded value with an **Excel SUM or addition formula** referencing the component rows (e.g., `=SUM(C6:C9)` for Total revenue)
 2. Compare what the formula produces against the PDF-reported total
-3. If they differ by more than $0.5M, insert a **"(reported)"** row directly below the formula row containing the original PDF-stated value, formatted in **red italic** font
+3. If they differ by more than $0.5M, insert a **"(reported)"** row directly below the formula row containing the original PDF-stated value, formatted in **grey italic** font (color `808080`) — same subtle style as verification/sanity-check rows
 4. The formula row is the "live" version; the "(reported)" row preserves the auditor-friendly PDF source value
 
 **When discrepancies indicate missing line items** (e.g., Current Liabilities formula is $500M below the reported total), go back to the source PDFs and extract the missing items. Common culprits:
@@ -179,9 +182,64 @@ After the initial Excel is built, audit every summation row for correctness and 
 - Keeping both sets of rows in the same sheet — cells are simply blank for years where that format doesn't apply
 - Reporting individual expense lines (Travel, Telecom, Supplies, Software & equipment) separately when the source reports them that way, rather than combining them
 
-**Output:** Save as `{zettel_prefix} {TICKER} Financial Statements v2.xlsx` alongside the original. The v2 is the audited version with formulas; the original preserves the initial extraction.
+All summation formulas, "(reported)" verification rows, and analysis tabs are built directly into the single output workbook — there is no separate version.
 
-### Step 7: Link in the Dataroom zettel
+### Step 7: Add analysis tabs to the v2 workbook
+
+After the v2 is built with audited formulas, add three analysis sheets. All must use **Excel formulas referencing the source sheets** (e.g., `='Income Statement'!C6/'Income Statement'!C10`) so they auto-update.
+
+#### Sheet 5: Vertical Common Size
+
+Express every line item as a percentage of a base figure for the same year:
+- **IS line items** → % of Total Revenue
+- **BS line items** → % of Total Assets
+- **CF line items** → % of Total Revenue (more meaningful than % of OCF)
+
+Wrap all formulas in `IFERROR(...,"")` to handle blanks. Format: `0.0%`. Include all line items from IS, BS, and CF (skip "(reported)" rows). Use the same section headers as the source sheets.
+
+#### Sheet 6: Horizontal Common Size (YoY % Change)
+
+Express every line item as **year-over-year percentage change** from the prior year:
+- Formula: `=IFERROR((CurrentYear - PriorYear) / ABS(PriorYear), "")`
+- Years run left-to-right newest-to-oldest (C=most recent), so "prior year" = one column to the RIGHT
+- The earliest year column is blank (no prior year available)
+
+Format: `0.0%`. Same sections and line items as Vertical sheet.
+
+#### Sheet 7: DuPont Analysis
+
+Formula-based decomposition of ROE using source sheet references. Use **average balance sheet figures** (current + prior year / 2) for proper matching with income statement flows.
+
+**3-Factor DuPont:**
+- Net Profit Margin = Net Income / Revenue
+- Asset Turnover = Revenue / Avg Total Assets
+- Equity Multiplier = Avg Total Assets / Avg Total Equity
+- **ROE (3-Factor)** = product of above three (bold, double bottom border)
+- ROE (direct, verification) — grey italic sanity check row
+
+**5-Factor DuPont:**
+- Tax Burden = Net Income / Pre-tax Income
+- Interest Burden = Pre-tax Income / EBIT
+- EBIT Margin = EBIT / Revenue (where EBIT = Revenue - Total Expenses)
+- Asset Turnover (same formula)
+- Equity Multiplier (same formula)
+- **ROE (5-Factor)** = product of all five (bold, double bottom border)
+- ROE (direct, verification) — grey italic sanity check row
+
+**Supporting Metrics:**
+- EBIT ($mm), EBITDA ($mm), EBITDA Margin
+- Net Debt ($mm) = Total Liabilities - Cash
+- ROIC = NOPAT / Avg Invested Capital (where NOPAT = EBIT × (1 - effective tax rate), Invested Capital = Equity + Net Debt)
+
+**Formatting for all analysis tabs:**
+- Same IB standard: Arial 10pt, gridlines off, landscape, fit-to-width
+- Section headers: light blue fill (`D9E1F2`), bold
+- Subtotal rows: bold, thin top border
+- Grand total rows: bold, thin top + double bottom border
+- No green font on cross-sheet references — keep all text black
+- Verification/sanity-check rows: grey italic (`808080`)
+
+### Step 8: Link in the Dataroom zettel
 
 If the user's vault uses Zettelkasten with Obsidian:
 
@@ -189,9 +247,9 @@ If the user's vault uses Zettelkasten with Obsidian:
 2. Create a new zettel with YAML frontmatter, an embed link to the Excel file, and source/date notes
 3. Add a wikilink in the Dataroom zettel
 
-### Step 8: Report to the user
+### Step 9: Report to the user
 
-Summarize: JSON path, Excel path (original + v2) with sheet names and period coverage, any data gaps or discrepancies found during audit, and Dataroom link.
+Summarize: JSON path, Excel path (7 tabs) with period coverage, any data gaps or discrepancies found during audit, and Dataroom link.
 
 ## Dependencies
 
