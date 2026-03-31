@@ -26,7 +26,7 @@ Every company reports differently. A bank's income statement looks nothing like 
    - Income Statement (with SUM formulas + "(reported)" verification rows)
    - Balance Sheet (with SUM formulas + "(reported)" verification rows)
    - Cash Flow Statement (with SUM formulas + "(reported)" verification rows)
-   - Operating Metrics
+   - Operating Metrics (includes Yahoo Finance market data section at the bottom, clearly labeled)
    - Vertical Common Size (each item as % of Revenue/Total Assets)
    - Horizontal Common Size (YoY % change)
    - DuPont Analysis (3-factor + 5-factor ROE decomposition)
@@ -239,7 +239,125 @@ Formula-based decomposition of ROE using source sheet references. Use **average 
 - No green font on cross-sheet references — keep all text black
 - Verification/sanity-check rows: grey italic (`808080`)
 
-### Step 8: Link in the Dataroom zettel
+### Step 8: Append Yahoo Finance market data to Operating Metrics
+
+After the analysis tabs are complete, fetch market data from Yahoo Finance using Python's `yfinance` library and append it as a clearly separated section at the bottom of the Operating Metrics tab. This data supplements the annual-report-derived metrics above with market pricing and valuation context.
+
+**Why this step is separate and labeled:** The financial statement data (Steps 1–7) comes directly from audited filings — it's primary source data. The yfinance data is secondary market data that can change, may have gaps, and uses a different currency for some tickers. Keeping them visually distinct helps the user know exactly which numbers came from the company's own filings and which came from Yahoo Finance.
+
+#### 8a. Fetch year-end closing prices
+
+```python
+import yfinance as yf
+ticker = yf.Ticker(TICKER_SYMBOL)  # e.g., 'TOI.V', 'CSU.TO', 'ALLY'
+hist = ticker.history(period='max')
+```
+
+For each year covered by the financial statements, extract the **last trading day's closing price**:
+```python
+for year in years:
+    year_data = hist[hist.index.year == year]
+    if len(year_data) > 0:
+        price = year_data.iloc[-1]['Close']
+```
+
+Some tickers won't have data for all years (e.g., TOI.V only started trading in 2021 after the CSI spin-off). Leave those years blank — don't interpolate or estimate.
+
+#### 8b. Fetch current snapshot metrics from `ticker.info`
+
+The `ticker.info` dictionary contains a rich set of current market data. Extract whatever is available — the exact fields vary by ticker and exchange. Common useful fields:
+
+| Field | Description |
+|-------|-------------|
+| `marketCap` | Current market cap (in trading currency) |
+| `enterpriseValue` | Current EV |
+| `trailingPE` | Trailing P/E |
+| `forwardPE` | Forward P/E (analyst consensus) |
+| `priceToBook` | Price / Book |
+| `enterpriseToEbitda` | EV / EBITDA |
+| `enterpriseToRevenue` | EV / Revenue |
+| `profitMargins` | Net margin |
+| `dividendYield` | Current dividend yield |
+| `payoutRatio` | Dividend payout ratio |
+| `beta` | Beta (vs market) |
+| `fiftyTwoWeekHigh` | 52-week high |
+| `fiftyTwoWeekLow` | 52-week low |
+| `shortPercentOfFloat` | Short interest (% of float) |
+| `heldPercentInsiders` | Insider ownership % |
+| `heldPercentInstitutions` | Institutional ownership % |
+| `currency` | Trading currency (e.g., CAD, USD, EUR) |
+
+Not all fields exist for every ticker. Use `.get()` with `None` defaults and skip any that return `None`.
+
+#### 8c. Write to the Operating Metrics tab
+
+Add a **section header row** with a distinct label so the user immediately knows the data source:
+
+```
+Market Data (source: Yahoo Finance via yfinance)
+```
+
+Use the same IB formatting (light blue fill, bold) as other section headers, but append ` — source: Yahoo Finance` in the header text.
+
+**Historical valuation rows** (one value per year, like the rest of the Operating Metrics tab):
+
+| Row | Formula | Format |
+|-----|---------|--------|
+| Year-end Share Price | From yfinance history | `$#,##0.00` |
+| Market Cap (diluted) | Price × diluted shares outstanding | `#,##0` (in millions of trading currency) |
+| P/E (trailing) | Price / EPS diluted | `0.0x` |
+| Price / OCF per share | (Price × diluted shares) / OCF | `0.0x` |
+| Price / EBITDA | (Price × diluted shares) / EBITDA | `0.0x` |
+| Price / Book Value | (Price × diluted shares) / Total Equity | `0.0x` |
+| FCF Yield | FCF / (Price × diluted shares) | `0.0%` |
+
+**Cross-currency note:** When the trading currency (from `ticker.info['currency']`) differs from the reporting currency (from the financial statements), add a grey italic note row below the section header:
+
+```
+Note: Valuation multiples are cross-currency ({trading_ccy} price / {reporting_ccy} fundamentals). [Ticker] began trading [date].
+```
+
+This is important because many Canadian-listed companies (CSU.TO, TOI.V) trade in CAD but report in EUR or USD. The multiples are still directionally useful for tracking trends over time, but the user should know they aren't pure same-currency ratios.
+
+**Current snapshot rows** (single value in the most recent year's column, or a separate mini-section):
+
+Add a second sub-header: `Current Snapshot (as of {today's date})`
+
+Include whatever `ticker.info` fields are available:
+- Current Price, Market Cap, Enterprise Value
+- Trailing P/E, Forward P/E, EV/EBITDA, EV/Revenue, Price/Book
+- Dividend Yield, Payout Ratio
+- Beta, 52-Week High, 52-Week Low
+- Short % of Float, Insider Ownership %, Institutional Ownership %
+
+Format the current snapshot as a two-column layout (label in column A, value in column B) below the historical valuation rows, since these are point-in-time values that don't map to specific fiscal years.
+
+#### 8d. Save to JSON
+
+Also add the yfinance data to the JSON data file under a `market_data` key:
+
+```json
+{
+  "market_data": {
+    "source": "Yahoo Finance (yfinance)",
+    "trading_currency": "CAD",
+    "year_end_prices": {"2021": 113.87, "2022": 69.72, ...},
+    "current_snapshot": {
+      "date": "2026-03-31",
+      "price": 93.85,
+      "market_cap": 12183000000,
+      "beta": 0.85,
+      ...
+    }
+  }
+}
+```
+
+#### 8e. Dependencies
+
+Add `yfinance` (`pip install yfinance`) to the dependencies list. It's a lightweight library that wraps Yahoo Finance's public API — no API key needed.
+
+### Step 9: Link in the Dataroom zettel
 
 If the user's vault uses Zettelkasten with Obsidian:
 
@@ -247,15 +365,16 @@ If the user's vault uses Zettelkasten with Obsidian:
 2. Create a new zettel with YAML frontmatter, an embed link to the Excel file, and source/date notes
 3. Add a wikilink in the Dataroom zettel
 
-### Step 9: Report to the user
+### Step 10: Report to the user
 
-Summarize: JSON path, Excel path (7 tabs) with period coverage, any data gaps or discrepancies found during audit, and Dataroom link.
+Summarize: JSON path, Excel path (7 tabs) with period coverage, any data gaps or discrepancies found during audit, Dataroom link, and which years had yfinance market data available.
 
 ## Dependencies
 
 - **edgartools** (`pip install edgartools`) — for EDGAR path only
 - **openpyxl** — for Excel creation
 - **pandas** — for data manipulation
+- **yfinance** (`pip install yfinance`) — for market data (year-end prices, current snapshot)
 
 ## Scripts
 
