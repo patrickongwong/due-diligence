@@ -1,6 +1,6 @@
 ---
 name: dd-2financials
-description: Extract historical financial statements and operating metrics for any ticker — from SEC EDGAR XBRL or annual report PDFs — into JSON and IB-formatted Excel. Use when the user asks to pull financials, get IS/BS/CF, or build a financial data file for DD.
+description: Extract historical financial statements (Income Statement, Balance Sheet, Cash Flow) and operating metrics for any ticker — from SEC EDGAR XBRL for US stocks, or from company annual report PDFs for Canadian/international stocks. Saves to JSON and a professionally formatted Excel workbook with Wall Street IB conventions. Use this skill whenever the user says /dd-2financials, asks to "pull financials for [ticker]", "get financial statements for [ticker]", "extract 10-K data", "build a financial data file", "create financial statements Excel", or wants historical financial data compiled for due diligence. Also trigger when the user asks to "add financials to the dataroom" or "get IS/BS/CF for [ticker]".
 ---
 
 # Financial Statements & Operating Metrics Extractor
@@ -22,7 +22,7 @@ Every company reports differently. A bank's income statement looks nothing like 
 
 1. **JSON data file** (`{zettel_prefix} {TICKER}.json`) — at `dd Due Diligence/` level per the DD CLAUDE.md convention. Contains all financial statement line items and computed operating metrics with source attribution.
 
-2. **Excel workbook** (`{zettel_prefix} {TICKER} Financial Statements.xlsx`) — in the ticker's Dataroom folder. Contains 7 tabs:
+2. **Excel workbook** (`{zettel_prefix} {TICKER} Financial Statements.xlsx`) — in the ticker's Dataroom folder. Contains 8 tabs:
    - Income Statement (with SUM formulas + "(reported)" verification rows)
    - Balance Sheet (with SUM formulas + "(reported)" verification rows)
    - Cash Flow Statement (with SUM formulas + "(reported)" verification rows)
@@ -30,6 +30,7 @@ Every company reports differently. A bank's income statement looks nothing like 
    - Vertical Common Size (each item as % of Revenue/Total Assets)
    - Horizontal Common Size (YoY % change)
    - DuPont Analysis (3-factor + 5-factor ROE decomposition)
+   - QoE — Quality of Earnings (O'Glove framework, applied to available data)
 
 3. **Dataroom link** — if the user has a Zettelkasten in Obsidian, append a wikilink to the Dataroom zettel.
 
@@ -239,6 +240,85 @@ Formula-based decomposition of ROE using source sheet references. Use **average 
 - No green font on cross-sheet references — keep all text black
 - Verification/sanity-check rows: grey italic (`808080`)
 
+#### Sheet 8: Quality of Earnings (QoE)
+
+Apply Thornton O'Glove's Quality of Earnings framework (from `ln99a How To Figure Out Quality Of Earnings`) to the financial data. This sheet uses **only Excel formulas referencing the source sheets** so it auto-updates.
+
+**Core principle: work with what's available.** O'Glove's framework has 10 tests but not all apply to every company or every dataset. Scout the IS, BS, and CF tabs first to see which line items exist, then build only the tests that the data supports. Do NOT add blank sections for tests that can't be computed.
+
+**The 5 tests that are typically computable from financial statement data:**
+
+**Section 1: Strip Out Nonoperating & Nonrecurring Income (NO/NR)**
+
+Scout the Income Statement "Other Items" section (below Total Expenses, above Pre-tax Income) for nonoperating/nonrecurring items. Common examples — but every company is different:
+- Foreign exchange gains/losses
+- Asset revaluations (IRGA/TSS, equity method, held-for-trading)
+- Bargain purchase gains
+- Impairment charges
+- One-time securities expenses (redeemable preferred revaluation)
+- Investment/finance income not from core operations
+- Gains/losses on asset sales
+
+For each item found, pull it via a cross-sheet reference. Then compute:
+- **Adjusted operating pre-tax income** = Reported pre-tax + SUM(NO/NR items). The sign convention: in many IS layouts, these items are subtracted from operating income to arrive at pre-tax income, so adding them back removes their effect. Verify the sign logic against the specific IS structure — if `Pre-tax = Revenue - Expenses - Other Items`, then `Adjusted = Pre-tax + Other Items (NO/NR subset)`.
+- **Total NO/NR items** and **NO/NR as % of reported pre-tax** — highlights how much of reported earnings is noise
+- **Adjusted pre-tax YoY growth** — the true operating trajectory
+- **Adjusted operating EPS (after-tax)** = Adjusted pre-tax × (1 - effective tax rate) / shares outstanding
+
+**Section 2: Analyse Declining & Increasing Expenses**
+
+Three sub-sections:
+
+*Expenses as % of Revenue:* For each expense line item in the IS, compute `= expense / total revenue`. Format as `0.0%`.
+
+*YoY Change in Expense %:* For each expense line, compute the change in its percentage from the prior year to the current year. Since columns run left-to-right newest-to-oldest (C=most recent), "prior year" = one column to the RIGHT. The **earliest year column is blank** (no prior year). Formula: `= current_year_pct - prior_year_pct` (positive = expense rose as % of revenue). Format as `0.0%`.
+
+*Per-Share Impact of Expense Changes:* Quantify how much each expense shift contributed to or detracted from EPS. Formula: `(prior_year_pct - current_year_pct) × current_year_revenue / current_year_shares`. Positive = margin benefit (expense % fell). Format as `#,##0.00`. Earliest year column blank.
+
+**Section 3: Watch Accounts Receivable & Inventories vs. Sales**
+
+Three sub-sections:
+
+*Absolute Values:* Pull total revenue, accounts receivable, unbilled revenue (if the company reports it), inventories, and deferred revenue from the source sheets.
+
+*YoY Growth Rates:* Compute growth for each line. Column direction: current year (left) divided by prior year (right) minus 1. Earliest year blank.
+
+*Divergence Analysis:* Compute `A/R growth - Revenue growth` and `Inventory growth - Revenue growth`. Format as `0.0%`. Positive = that balance grew faster than sales (O'Glove red flag).
+
+*Efficiency Ratios:* DSO (`A/R / Revenue × 365`), DIO (`Inventory / Revenue × 365`), Deferred Revenue Days (`Deferred Revenue / Revenue × 365`). Format as `0.0`.
+
+**Section 4: Analyse Debt & Cash Flow**
+
+*Income vs. Cash Flow:* Pull net income (reported) and operating cash flow. Compute `OCF - Net Income` (the gap) and `OCF / Net Income` ratio (format `0.0x`). Ratio > 1.0x is a green flag; persistently < 1.0x is O'Glove's primary red flag.
+
+*Cash Flow Bridge:* Pull every line item from the CF Operating Activities section (net income, D&A, non-cash adjustments, working capital changes, taxes paid) to show exactly how net income converts to OCF.
+
+*Cash Flow Adequacy:* Pull FCF, capex, acquisition spend, interest paid, dividends paid. Compute:
+- `OCF coverage of interest + dividends` (format `0.0x`)
+- `FCF after acquisitions` (= FCF - acquisition spend)
+- OCF margin and FCF margin from Operating Metrics
+
+**Section 5: Evaluate Dividend Policy**
+
+*Dividend Analysis:* Pull EPS, DPS, OCF per share. Compute:
+- `Payout ratio (DPS / EPS)` — format `0.0%`
+- `DPS as % of OCF per share` — format `0.0%`. This is the cash-based payout ratio.
+
+*Debt Trajectory:* Compute total debt by summing all borrowing line items from the BS (scout for what exists — bank debt, credit facilities, senior notes, debentures, IRGA liabilities, etc.). Then:
+- Cash and equivalents (from BS)
+- Net debt (= total debt - cash)
+- `Net debt / OCF` ratio (format `0.0x`)
+
+**Formatting specifics for QoE tab:**
+- Each test section gets a **dark blue banner row** (fill `1F4E79`, white bold text) spanning all columns as a visual separator
+- Below each banner, a grey italic note row explaining the purpose of the test
+- **Signal rows** (the key diagnostic ratios) get a light yellow fill (`FFF2CC`) so they stand out
+- Subtotal/adjusted rows get a light green fill (`E2EFDA`) with bold + double bottom border
+- Column B width ~45 for labels, data columns ~13 each
+- Freeze panes at C5 so headers stay visible while scrolling
+
+**Column direction reminder (critical):** Years run left-to-right newest-to-oldest. All YoY formulas must compare current (left) to prior (right). The blank/empty cell goes in the **rightmost data column** (earliest year), NOT the leftmost.
+
 ### Step 8: Append Yahoo Finance market data to Operating Metrics
 
 After the analysis tabs are complete, fetch market data from Yahoo Finance using Python's `yfinance` library and append it as a clearly separated section at the bottom of the Operating Metrics tab. This data supplements the annual-report-derived metrics above with market pricing and valuation context.
@@ -367,7 +447,7 @@ If the user's vault uses Zettelkasten with Obsidian:
 
 ### Step 10: Report to the user
 
-Summarize: JSON path, Excel path (7 tabs) with period coverage, any data gaps or discrepancies found during audit, Dataroom link, and which years had yfinance market data available.
+Summarize: JSON path, Excel path (8 tabs) with period coverage, any data gaps or discrepancies found during audit, Dataroom link, and which years had yfinance market data available.
 
 ## Dependencies
 
