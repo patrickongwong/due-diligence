@@ -1,6 +1,6 @@
 ---
 name: dd-1bear
-description: Generate a Bear Case One-Pager PDF for any stock ticker — compiles the strongest bearish arguments from sell-side analysts, famous investors, and financial journalists with clickable source links. Use this skill whenever the user says /dd-1bear, asks for a "bear case", "bearish arguments", "bear one-pager", "devil's advocate on [ticker]", "what are the risks of [ticker]", "who's bearish on [ticker]", or wants to understand why smart people are betting against a stock. Also trigger when the user asks to "steelman the bear case" or "find the biggest critics" of a stock. Works for any publicly traded stock — US, international, any exchange.
+description: Generate a Bear Case One-Pager PDF for any stock ticker — strongest bearish arguments from analysts, investors, and journalists with sources. Use when the user asks about bear cases, risks, or bearish views on a stock.
 ---
 
 # Bear Case One-Pager

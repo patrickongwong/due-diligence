@@ -1,6 +1,6 @@
 ---
 name: dd-phase1
-description: Run Phase 1 of Due Diligence on a stock ticker — dispatches all five DD one-pager skills (Value Line, Industry Analysis, Management Honesty Check, Bear Case, Annotated Price Chart) in parallel and collects the results. Use this skill whenever the user says /dd-phase1, asks to "run phase 1 due diligence", "start DD on [ticker]", "run all the one-pagers for [ticker]", "kick off due diligence on [ticker]", or wants all five DD reports generated at once rather than invoking them individually. Also trigger when the user asks for a "full DD overview", "initial DD package", or "phase 1 on [ticker]".
+description: Run all five Phase 1 DD one-pagers (Value Line, Industry, Honesty Check, Bear Case, Price Chart) in parallel for a stock ticker. Use when the user wants to kick off due diligence or run all DD reports at once.
 ---
 
 # DD Phase 1: Parallel Due Diligence One-Pagers

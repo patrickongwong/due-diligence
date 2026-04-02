@@ -1,6 +1,6 @@
 ---
 name: dd-2financials
-description: Extract historical financial statements (Income Statement, Balance Sheet, Cash Flow) and operating metrics for any ticker — from SEC EDGAR XBRL for US stocks, or from company annual report PDFs for Canadian/international stocks. Saves to JSON and a professionally formatted Excel workbook with Wall Street IB conventions. Use this skill whenever the user says /dd-2financials, asks to "pull financials for [ticker]", "get financial statements for [ticker]", "extract 10-K data", "build a financial data file", "create financial statements Excel", or wants historical financial data compiled for due diligence. Also trigger when the user asks to "add financials to the dataroom" or "get IS/BS/CF for [ticker]".
+description: Extract historical financial statements and operating metrics for any ticker — from SEC EDGAR XBRL or annual report PDFs — into JSON and IB-formatted Excel. Use when the user asks to pull financials, get IS/BS/CF, or build a financial data file for DD.
 ---
 
 # Financial Statements & Operating Metrics Extractor

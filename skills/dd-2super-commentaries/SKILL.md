@@ -1,6 +1,6 @@
 ---
 name: dd-2super-commentaries
-description: Find superinvestors who own a stock and collect all their public commentaries, shareholder letters, videos, interviews, and podcasts about it — creating a structured zettel index under the ticker's Data Room. Use this skill whenever the user says /dd-2super-commentaries, asks to "find superinvestor commentary on [ticker]", "who among the superinvestors owns [ticker]", "collect investor letters about [ticker]", "what have famous investors said about [ticker]", or wants to build a research collection of what prominent fund managers have publicly said about a specific stock. Also trigger when the user asks "which superinvestors hold [ticker]" or "gather investor commentary for DD".
+description: Find superinvestors who own a stock and collect all their public commentaries, letters, interviews, and podcasts into a structured zettel index. Use when the user asks about superinvestor holdings, investor commentary, or what famous investors say about a stock.
 ---
 
 # DD Phase 2: Superinvestor Commentaries

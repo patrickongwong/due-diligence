@@ -1,6 +1,6 @@
 ---
 name: dd-1ind
-description: Generate an Industry Analysis One-Pager PDF for any stock ticker — covers market share trends, key competitors and their performance, "silver bullet" competitive threat analysis, and industry ecosystem (suppliers, customers, regulations) with clickable source links. Use this skill whenever the user says /dd-1ind, asks for "industry analysis", "industry overview", "competitive landscape for [ticker]", "market share analysis", "who are the competitors of [ticker]", "industry report", or wants to understand the competitive dynamics and industry structure around a stock. Also trigger when the user asks "what industry is [ticker] in", "how does [ticker] compare to competitors", or "show me the industry for [ticker]". Works for any publicly traded stock.
+description: Generate an Industry Analysis PDF for any stock ticker — market share, competitors, silver bullet analysis, and industry ecosystem with sources. Use when the user asks about industry dynamics, competitive landscape, or competitors for a stock.
 ---
 
 # Industry Analysis One-Pager

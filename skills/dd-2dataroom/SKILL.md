@@ -1,6 +1,6 @@
 ---
 name: dd-2dataroom
-description: Build a Due Diligence Dataroom for a stock ticker — creates a Dataroom zettel with child zettels linking to all SEC filings (10-K/20-F, 10-Q, DEF 14A), shareholder letters, investor presentations, and earnings call transcripts. Use this skill whenever the user says /dd-2dataroom, asks to "build a dataroom", "set up a dataroom for [ticker]", "gather filings for [ticker]", "collect SEC documents for [ticker]", "create a dataroom", or wants to assemble all the key documents for due diligence research on a company. Also trigger when the user asks to "find all 10-Ks", "get the proxy statements", "where are the earnings transcripts", or any request to systematically gather corporate filings and documents for a ticker that already has a dd zettel.
+description: Build a Due Diligence Dataroom for a stock ticker — indexes all SEC filings, shareholder letters, investor presentations, and earnings transcripts as zettels. Use when the user asks to build a dataroom, gather filings, or collect documents for DD.
 ---
 
 # DD Phase 2: Dataroom

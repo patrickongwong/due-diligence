@@ -1,6 +1,6 @@
 ---
 name: dd-zettelfy
-description: Assign zettel IDs to unorganized dd Due Diligence prospect folders, create child zettels with PDF links, rename folders, and update the parent index. Use when the user says /dd-zettelfy, asks to "zettelfy due diligence", "organize dd folders", "assign zettel IDs to prospects", or wants to integrate new prospect folders into the zettelkasten system.
+description: Assign zettel IDs to unorganized dd Due Diligence prospect folders, create child zettels with PDF links, and rename folders. Use when the user wants to organize or integrate new DD prospect folders into the zettelkasten.
 ---
 
 # dd-zettelfy

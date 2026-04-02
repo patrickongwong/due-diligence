@@ -1,6 +1,6 @@
 ---
 name: dd-1honesty
-description: Generate a Management Honesty Check PDF (2-3 pages) for any stock ticker — finds what current management publicly projected (revenue targets, margin goals, store openings, product launches, strategic milestones) and checks whether they delivered. Use this skill whenever the user says /dd-1honesty, asks for a "management honesty check", "projection accuracy", "did management deliver", "guidance track record", "are they honest", "do they keep promises", "management credibility", or wants to evaluate whether a company's leadership follows through on what they say. Also trigger when the user asks "can I trust this management team" or "how accurate is their guidance". Works for any publicly traded stock.
+description: Generate a Management Honesty Check PDF for any stock ticker — compares management's public projections and guidance against actual results. Use when the user asks about management credibility, guidance accuracy, or whether leadership delivers on promises.
 ---
 
 # Management Honesty Check

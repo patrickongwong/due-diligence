@@ -1,6 +1,6 @@
 ---
 name: dd-1price-chart
-description: Generate an annotated historical stock price chart for any ticker as part of Due Diligence. Fetches price data from Yahoo Finance, identifies significant price movements, web-searches for headlines explaining each move, fact-checks with a subagent, and renders a publication-quality PNG. Use when the user says /dd-1price-chart, asks for an "annotated price chart", "historical price chart for DD", "price chart with events", or wants a visual price history for a stock they're researching. Also trigger when the user says "chart this stock" or "show me the price history of X with annotations".
+description: Generate an annotated historical stock price chart PDF — identifies significant moves, researches headlines, and fact-checks annotations. Use when the user asks for a price chart, annotated chart, or visual price history for a stock.
 ---
 
 # DD Price Chart

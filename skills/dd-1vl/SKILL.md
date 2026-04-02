@@ -1,6 +1,6 @@
 ---
 name: dd-1vl
-description: Generate a Value Line-style one-page PDF stock report for any US-listed company. Fetches 15 years of financial data from SEC EDGAR and Yahoo Finance, renders a dense single-page PDF with historical financials, price chart, capital structure, quarterly data, growth rates, ROIC, leverage ratios, and company-specific segment data. Use when the user asks for a "Value Line", "one-pager", "stock report", "stock summary", "/dd-vl", or "/dd-1vl" for a ticker.
+description: Generate a Value Line-style one-page PDF stock report — 15 years of financials, price chart, capital structure, and key ratios from SEC EDGAR. Use when the user asks for a Value Line report, stock one-pager, or financial summary for a ticker.
 ---
 
 # Value Line One-Pager Generator
