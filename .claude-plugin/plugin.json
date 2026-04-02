@@ -1,6 +1,6 @@
 {
   "name": "due-diligence",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Equity research due diligence toolkit — generates professional PDF reports including bear cases, management honesty checks, industry analysis, Value Line one-pagers, and annotated price charts for any stock ticker.",
   "author": {
     "name": "Patrick Wong",
